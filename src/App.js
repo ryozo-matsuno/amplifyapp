@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import AddBI from './AddBI';
+import ListBI from './ListBI';
+import NoMatch from './NoMatch';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { Amplify } from 'aws-amplify';
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+
+import awsExports from './aws-exports';
+Amplify.configure(awsExports);
+
+
+class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+  }
+
+  render() {
+
+    return (
+      <Authenticator>
+        {({signOut, user }) => (
+          <BrowserRouter>
+            <h1>Book Information System</h1>
+            <div>
+            <button>
+                <Link to="/">BI追加</Link>
+              </button>
+              <button>
+                <Link to="/ListBI">BI一覧</Link>
+              </button>
+              <button onClick={signOut}>Sign out</button>
+            </div>
+
+            <Routes>
+              <Route exact path="/" element={<AddBI />} />>
+              <Route exact path="/ListBI" element={<ListBI />} />
+              <Route exact path="*" element={<NoMatch />} />
+            </Routes>
+          </BrowserRouter>
+        )}
+      </Authenticator>
+    );
+  }
 }
 
 export default App;
